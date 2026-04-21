@@ -1,0 +1,11 @@
+node_modules/
+dist/
+target/
+.anchor/
+.env
+*.log
+test-ledger/
+coverage/
+.DS_Store
+Thumbs.db
+.cache/
