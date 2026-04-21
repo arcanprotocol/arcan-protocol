@@ -1,0 +1,19 @@
+{
+  "name": "@arcan/protocol",
+  "version": "0.1.0",
+  "description": "The coordination layer for autonomous AI agents on Solana",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "test": "echo \"no tests yet\""
+  },
+  "license": "MIT",
+  "dependencies": {
+    "@coral-xyz/anchor": "^0.30.1",
+    "@solana/web3.js": "^1.95.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.5.2"
+  }
+}
