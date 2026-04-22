@@ -21,3 +21,24 @@ export interface RegisterAgentParams {
   costPerTask: number;
   endpoint: string;
 }
+
+export interface RouteTaskParams {
+  capability: string;
+  maxCost: number;
+  preferredLatency?: "low" | "medium" | "high";
+  preferredAgent?: PublicKey;
+}
+
+export interface Route {
+  address: PublicKey;
+  taskId: string;
+  requester: PublicKey;
+  agent: PublicKey;
+  capability: string;
+  cost: BN;
+  reputationAtRoute: number;
+  routedAt: number;
+  status: RouteStatus;
+}
+
+export type RouteStatus = "pending" | "active" | "completed" | "failed" | "disputed";
