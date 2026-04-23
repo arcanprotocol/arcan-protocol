@@ -42,3 +42,33 @@ export interface Route {
 }
 
 export type RouteStatus = "pending" | "active" | "completed" | "failed" | "disputed";
+
+export interface Settlement {
+  address: PublicKey;
+  taskId: string;
+  requester: PublicKey;
+  agent: PublicKey;
+  amount: BN;
+  createdAt: number;
+  timeoutAt: number;
+  status: EscrowStatus;
+  resultHash: string;
+  disputeReason: string;
+}
+
+export type EscrowStatus = "locked" | "result_submitted" | "completed" | "disputed" | "refunded";
+
+export interface SettlePaymentParams {
+  status: "completed" | "disputed";
+  resultHash?: string;
+  disputeReason?: string;
+}
+
+export interface AgentReputation {
+  agent: PublicKey;
+  score: number;
+  tasksCompleted: number;
+  tasksFailed: number;
+  successRate: number;
+  registeredAt: number;
+}
