@@ -16,6 +16,7 @@ pub mod arcan_router {
         require!(name.len() <= 32, ArcanError::NameTooLong);
         require!(capabilities.len() <= 16, ArcanError::TooManyCapabilities);
         require!(!capabilities.is_empty(), ArcanError::NoCapabilities);
+        require!(endpoint.len() <= 256, ArcanError::EndpointTooLong);
 
         let agent = &mut ctx.accounts.agent;
         agent.authority = ctx.accounts.authority.key();
@@ -30,6 +31,15 @@ pub mod arcan_router {
         agent.is_active = true;
         agent.bump = ctx.bumps.agent;
 
+        Ok(())
+    }
+
+    pub fn deregister_agent(ctx: Context<DeregisterAgent>) -> Result<()> {
+        let agent = &ctx.accounts.agent;
+        require!(
+            agent.authority == ctx.accounts.authority.key(),
+            ArcanError::Unauthorized
+        );
         Ok(())
     }
 }
@@ -69,6 +79,18 @@ pub struct RegisterAgent<'info> {
     pub system_program: Program<'info, System>,
 }
 
+#[derive(Accounts)]
+pub struct DeregisterAgent<'info> {
+    #[account(
+        mut,
+        close = authority,
+        has_one = authority,
+    )]
+    pub agent: Account<'info, AgentAccount>,
+    #[account(mut)]
+    pub authority: Signer<'info>,
+}
+
 #[error_code]
 pub enum ArcanError {
     #[msg("Agent name must be 32 characters or less")]
@@ -77,4 +99,8 @@ pub enum ArcanError {
     TooManyCapabilities,
     #[msg("At least one capability required")]
     NoCapabilities,
+    #[msg("Endpoint URL must be 256 characters or less")]
+    EndpointTooLong,
+    #[msg("Unauthorized: signer does not own this agent")]
+    Unauthorized,
 }
