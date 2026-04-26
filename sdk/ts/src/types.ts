@@ -72,3 +72,25 @@ export interface AgentReputation {
   successRate: number;
   registeredAt: number;
 }
+
+export interface AgentRegisteredEvent {
+  agent: PublicKey;
+  authority: PublicKey;
+  name: string;
+  capabilities: string[];
+}
+
+export interface TaskRoutedEvent {
+  route: PublicKey;
+  taskId: string;
+  agent: PublicKey;
+  requester: PublicKey;
+  cost: BN;
+}
+
+export interface SettlementCompletedEvent {
+  escrow: PublicKey;
+  agent: PublicKey;
+  requester: PublicKey;
+  amount: BN;
+}
