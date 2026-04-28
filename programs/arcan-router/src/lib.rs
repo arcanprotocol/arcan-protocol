@@ -31,6 +31,13 @@ pub mod arcan_router {
         agent.is_active = true;
         agent.bump = ctx.bumps.agent;
 
+        emit!(AgentRegistered {
+            agent: agent.key(),
+            authority: agent.authority,
+            name: agent.name.clone(),
+            capabilities: agent.capabilities.clone(),
+        });
+
         Ok(())
     }
 
@@ -40,6 +47,49 @@ pub mod arcan_router {
             agent.authority == ctx.accounts.authority.key(),
             ArcanError::Unauthorized
         );
+        emit!(AgentDeregistered {
+            agent: agent.key(),
+            authority: agent.authority,
+        });
+        Ok(())
+    }
+
+    pub fn route_task(
+        ctx: Context<RouteTask>,
+        capability: String,
+        max_cost: u64,
+        task_id: String,
+    ) -> Result<()> {
+        require!(task_id.len() <= 64, ArcanError::TaskIdTooLong);
+
+        let route = &mut ctx.accounts.route;
+        let agent = &ctx.accounts.agent;
+
+        require!(
+            agent.capabilities.iter().any(|c| c == &capability),
+            ArcanError::CapabilityMismatch
+        );
+        require!(agent.is_active, ArcanError::AgentInactive);
+        require!(agent.cost_per_task <= max_cost, ArcanError::CostExceedsMax);
+
+        route.task_id = task_id.clone();
+        route.requester = ctx.accounts.requester.key();
+        route.agent = agent.key();
+        route.capability = capability;
+        route.cost = agent.cost_per_task;
+        route.reputation_at_route = agent.reputation_score;
+        route.routed_at = Clock::get()?.unix_timestamp;
+        route.status = RouteStatus::Pending;
+        route.bump = ctx.bumps.route;
+
+        emit!(TaskRouted {
+            route: route.key(),
+            task_id,
+            agent: agent.key(),
+            requester: ctx.accounts.requester.key(),
+            cost: agent.cost_per_task,
+        });
+
         Ok(())
     }
 }
@@ -61,6 +111,31 @@ pub struct AgentAccount {
     pub registered_at: i64,
     pub is_active: bool,
     pub bump: u8,
+}
+
+#[account]
+#[derive(InitSpace)]
+pub struct RouteAccount {
+    #[max_len(64)]
+    pub task_id: String,
+    pub requester: Pubkey,
+    pub agent: Pubkey,
+    #[max_len(32)]
+    pub capability: String,
+    pub cost: u64,
+    pub reputation_at_route: u16,
+    pub routed_at: i64,
+    pub status: RouteStatus,
+    pub bump: u8,
+}
+
+#[derive(AnchorSerialize, AnchorDeserialize, Clone, PartialEq, Eq, InitSpace)]
+pub enum RouteStatus {
+    Pending,
+    Active,
+    Completed,
+    Failed,
+    Disputed,
 }
 
 #[derive(Accounts)]
@@ -91,6 +166,46 @@ pub struct DeregisterAgent<'info> {
     pub authority: Signer<'info>,
 }
 
+#[derive(Accounts)]
+#[instruction(capability: String, max_cost: u64, task_id: String)]
+pub struct RouteTask<'info> {
+    #[account(
+        init,
+        payer = requester,
+        space = 8 + RouteAccount::INIT_SPACE,
+        seeds = [b"route", requester.key().as_ref(), task_id.as_bytes()],
+        bump,
+    )]
+    pub route: Account<'info, RouteAccount>,
+    pub agent: Account<'info, AgentAccount>,
+    #[account(mut)]
+    pub requester: Signer<'info>,
+    pub system_program: Program<'info, System>,
+}
+
+#[event]
+pub struct AgentRegistered {
+    pub agent: Pubkey,
+    pub authority: Pubkey,
+    pub name: String,
+    pub capabilities: Vec<String>,
+}
+
+#[event]
+pub struct AgentDeregistered {
+    pub agent: Pubkey,
+    pub authority: Pubkey,
+}
+
+#[event]
+pub struct TaskRouted {
+    pub route: Pubkey,
+    pub task_id: String,
+    pub agent: Pubkey,
+    pub requester: Pubkey,
+    pub cost: u64,
+}
+
 #[error_code]
 pub enum ArcanError {
     #[msg("Agent name must be 32 characters or less")]
@@ -103,4 +218,12 @@ pub enum ArcanError {
     EndpointTooLong,
     #[msg("Unauthorized: signer does not own this agent")]
     Unauthorized,
+    #[msg("Agent does not have the requested capability")]
+    CapabilityMismatch,
+    #[msg("Agent is not currently active")]
+    AgentInactive,
+    #[msg("Agent cost exceeds the maximum specified")]
+    CostExceedsMax,
+    #[msg("Task ID must be 64 characters or less")]
+    TaskIdTooLong,
 }
