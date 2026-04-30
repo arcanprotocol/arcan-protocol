@@ -1,3 +1,12 @@
+export { ArcanClient } from "./client";
+export {
+  ROUTER_PROGRAM_ID,
+  SETTLEMENT_PROGRAM_ID,
+  findAgentPDA,
+  findRoutePDA,
+  findEscrowPDA,
+  findEscrowVaultPDA,
+} from "./instructions";
 export type {
   Agent,
   RegisterAgentParams,
@@ -12,7 +21,3 @@ export type {
   TaskRoutedEvent,
   SettlementCompletedEvent,
 } from "./types";
-export {
-  ROUTER_PROGRAM_ID,
-  findAgentPDA,
-} from "./instructions";
