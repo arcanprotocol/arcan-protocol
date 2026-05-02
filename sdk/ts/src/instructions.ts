@@ -44,3 +44,31 @@ function encodeStringVec(arr: string[]): Buffer {
   const encoded = arr.map((s) => encodeString(s));
   return Buffer.concat([len, ...encoded]);
 }
+
+export function buildRegisterAgentIx(
+  authority: PublicKey,
+  name: string,
+  capabilities: string[],
+  costPerTask: BN,
+  endpoint: string,
+): { instruction: TransactionInstruction; agentPDA: PublicKey } {
+  const [agentPDA] = findAgentPDA(authority, name);
+  const discriminator = Buffer.from([133, 70, 173, 169, 215, 24, 147, 53]);
+  const data = Buffer.concat([
+    discriminator,
+    encodeString(name),
+    encodeStringVec(capabilities),
+    costPerTask.toArrayLike(Buffer, "le", 8),
+    encodeString(endpoint),
+  ]);
+  const instruction = new TransactionInstruction({
+    keys: [
+      { pubkey: agentPDA, isSigner: false, isWritable: true },
+      { pubkey: authority, isSigner: true, isWritable: true },
+      { pubkey: SystemProgram.programId, isSigner: false, isWritable: false },
+    ],
+    programId: ROUTER_PROGRAM_ID,
+    data,
+  });
+  return { instruction, agentPDA };
+}
