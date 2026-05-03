@@ -1,14 +1,23 @@
 {
   "name": "@arcan/sdk",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "TypeScript SDK for the Arcan Protocol",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
+  "files": ["dist/"],
+  "scripts": {
+    "build": "tsc",
+    "test": "jest"
+  },
   "license": "MIT",
   "dependencies": {
     "@coral-xyz/anchor": "^0.30.1",
     "@solana/web3.js": "^1.95.0",
     "bn.js": "^5.2.1",
-    "bs58": "^5.0.0"
+    "bs58": "^5.0.0",
+    "uuid": "^9.0.1"
+  },
+  "peerDependencies": {
+    "@solana/web3.js": "^1.90.0"
   }
 }
