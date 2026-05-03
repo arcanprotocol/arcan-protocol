@@ -72,3 +72,61 @@ export function buildRegisterAgentIx(
   });
   return { instruction, agentPDA };
 }
+
+export function buildRouteTaskIx(
+  requester: PublicKey,
+  agentPDA: PublicKey,
+  capability: string,
+  maxCost: BN,
+  taskId: string,
+): { instruction: TransactionInstruction; routePDA: PublicKey } {
+  const [routePDA] = findRoutePDA(requester, taskId);
+  const discriminator = Buffer.from([47, 193, 22, 210, 118, 87, 144, 19]);
+  const data = Buffer.concat([
+    discriminator,
+    encodeString(capability),
+    maxCost.toArrayLike(Buffer, "le", 8),
+    encodeString(taskId),
+  ]);
+  const instruction = new TransactionInstruction({
+    keys: [
+      { pubkey: routePDA, isSigner: false, isWritable: true },
+      { pubkey: agentPDA, isSigner: false, isWritable: false },
+      { pubkey: requester, isSigner: true, isWritable: true },
+      { pubkey: SystemProgram.programId, isSigner: false, isWritable: false },
+    ],
+    programId: ROUTER_PROGRAM_ID,
+    data,
+  });
+  return { instruction, routePDA };
+}
+
+export function buildCreateEscrowIx(
+  requester: PublicKey,
+  agent: PublicKey,
+  taskId: string,
+  amount: BN,
+  timeoutSeconds: BN,
+): { instruction: TransactionInstruction; escrowPDA: PublicKey; vaultPDA: PublicKey } {
+  const [escrowPDA] = findEscrowPDA(requester, taskId);
+  const [vaultPDA] = findEscrowVaultPDA(escrowPDA);
+  const discriminator = Buffer.from([210, 63, 12, 178, 94, 212, 113, 5]);
+  const data = Buffer.concat([
+    discriminator,
+    encodeString(taskId),
+    amount.toArrayLike(Buffer, "le", 8),
+    timeoutSeconds.toArrayLike(Buffer, "le", 8),
+  ]);
+  const instruction = new TransactionInstruction({
+    keys: [
+      { pubkey: escrowPDA, isSigner: false, isWritable: true },
+      { pubkey: vaultPDA, isSigner: false, isWritable: true },
+      { pubkey: requester, isSigner: true, isWritable: true },
+      { pubkey: agent, isSigner: false, isWritable: false },
+      { pubkey: SystemProgram.programId, isSigner: false, isWritable: false },
+    ],
+    programId: SETTLEMENT_PROGRAM_ID,
+    data,
+  });
+  return { instruction, escrowPDA, vaultPDA };
+}
