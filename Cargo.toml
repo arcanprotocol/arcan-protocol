@@ -1,8 +1,14 @@
 [workspace]
 members = [
     "programs/arcan-router",
+    "programs/arcan-settlement",
 ]
 
 [workspace.dependencies]
 anchor-lang = "0.30.1"
 anchor-spl = "0.30.1"
+
+[profile.release]
+overflow-checks = true
+lto = "fat"
+codegen-units = 1
