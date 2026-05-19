@@ -1,16 +1,26 @@
 {
   "name": "@arcan/protocol",
-  "version": "0.2.0",
+  "version": "0.4.0-rc.1",
   "description": "The coordination layer for autonomous AI agents on Solana",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
     "build": "tsc",
     "test": "jest --config jest.config.js",
+    "test:watch": "jest --watch",
     "lint": "eslint sdk/ts/src/ tests/ --ext .ts",
-    "format": "prettier --write ."
+    "format": "prettier --write .",
+    "anchor:build": "anchor build",
+    "anchor:test": "anchor test"
   },
+  "keywords": ["solana", "ai-agents", "coordination", "anchor", "defi"],
+  "author": "Arcan Protocol <team@arcanprotocol.xyz>",
   "license": "MIT",
+  "homepage": "https://arcanprotocol.xyz",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/arcanprotocol/arcan-protocol.git"
+  },
   "dependencies": {
     "@coral-xyz/anchor": "^0.30.1",
     "@solana/web3.js": "^1.95.0",
@@ -26,8 +36,13 @@
     "@typescript-eslint/parser": "^7.13.0",
     "eslint": "^8.57.0",
     "jest": "^29.7.0",
+    "lint-staged": "^15.2.7",
     "prettier": "^3.3.2",
     "ts-jest": "^29.1.5",
     "typescript": "^5.5.2"
+  },
+  "lint-staged": {
+    "*.{ts,tsx}": ["eslint --fix", "prettier --write"],
+    "*.{json,md}": ["prettier --write"]
   }
 }
