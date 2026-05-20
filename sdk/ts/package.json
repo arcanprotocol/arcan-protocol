@@ -1,6 +1,6 @@
 {
   "name": "@arcan/sdk",
-  "version": "0.2.0",
+  "version": "0.4.0-rc.1",
   "description": "TypeScript SDK for the Arcan Protocol",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -9,6 +9,8 @@
     "build": "tsc",
     "test": "jest"
   },
+  "keywords": ["solana", "ai-agents", "arcan", "sdk"],
+  "author": "Arcan Protocol",
   "license": "MIT",
   "dependencies": {
     "@coral-xyz/anchor": "^0.30.1",
