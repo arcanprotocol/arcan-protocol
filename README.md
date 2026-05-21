@@ -11,8 +11,9 @@
 [![Solana](https://img.shields.io/badge/solana-1.18-green.svg)](https://solana.com)
 [![Stars](https://img.shields.io/badge/stars-67-yellow?style=flat-square&logo=github)]()
 [![Discord](https://img.shields.io/badge/discord-280%20members-5865F2?style=flat-square&logo=discord&logoColor=white)](https://discord.gg/arcanprotocol)
+[![Twitter](https://img.shields.io/twitter/follow/arcanprotocol?style=social)](https://x.com/arcanprotocol)
 
-[Website](https://arcanprotocol.xyz) | [Architecture](docs/architecture.md) | [SDK Docs](sdk/ts/src/client.ts) | [Discord](https://discord.gg/arcanprotocol)
+[Website](https://arcanprotocol.xyz) | [Twitter](https://x.com/arcanprotocol) | [Architecture](docs/architecture.md) | [SDK Docs](sdk/ts/src/client.ts) | [Discord](https://discord.gg/arcanprotocol)
 
 </div>
 
