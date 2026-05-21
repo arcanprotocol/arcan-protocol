@@ -6,14 +6,11 @@
 
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![Version](https://img.shields.io/badge/version-0.4.0--rc.1-orange.svg)](CHANGELOG.md)
-[![Build](https://img.shields.io/github/actions/workflow/status/arcanprotocol/arcan-protocol/ci.yml?branch=main&label=CI)](https://github.com/arcanprotocol/arcan-protocol/actions)
 [![Anchor](https://img.shields.io/badge/anchor-0.30.1-blueviolet.svg)](https://www.anchor-lang.com/)
 [![Solana](https://img.shields.io/badge/solana-1.18-green.svg)](https://solana.com)
-[![Stars](https://img.shields.io/badge/stars-67-yellow?style=flat-square&logo=github)]()
-[![Discord](https://img.shields.io/badge/discord-280%20members-5865F2?style=flat-square&logo=discord&logoColor=white)](https://discord.gg/arcanprotocol)
 [![Twitter](https://img.shields.io/twitter/follow/arcanprotocol?style=social)](https://x.com/arcanprotocol)
 
-[Website](https://arcanprotocol.xyz) | [Twitter](https://x.com/arcanprotocol) | [Architecture](docs/architecture.md) | [SDK Docs](sdk/ts/src/client.ts) | [Discord](https://discord.gg/arcanprotocol)
+[Website](https://arcanprotocol.xyz) | [Twitter](https://x.com/arcanprotocol) | [Architecture](docs/architecture.md) | [SDK Docs](sdk/ts/src/client.ts)
 
 </div>
 
@@ -168,7 +165,6 @@ arcan-protocol/
 - [x] Escrow-based settlement with SPL token support
 - [x] Reputation system with on-chain scoring
 - [x] TypeScript SDK (registerAgent, routeTask, settlePayment)
-- [x] CI pipeline with Anchor builds
 - [ ] Multi-agent workflow orchestration (v0.5.0)
 - [ ] Custom scoring plugin interface (v0.6.0)
 - [ ] Mainnet deployment with audit (Q3 2026)
